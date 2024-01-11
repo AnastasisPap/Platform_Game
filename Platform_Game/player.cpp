@@ -3,10 +3,11 @@
 #include <cmath>
 #include <sgg/graphics.h>
 #include "player.h"
+#include "config.h"
 
-void Player::movePlayer(float dt)
+void Player::moveCharacter(float dt)
 {
-	float delta_time = dt / 5.0f;
+	float delta_time = dt / 10.0f;
 	if (m_is_pushed)
 	{
 		 // update speed. If we are starting to slow down then we subtract this from the current speed. If we are still accelerating we add this
@@ -32,7 +33,7 @@ void Player::movePlayer(float dt)
 		m_pos_x += delta_time * move;
 		m_pos_x = std::max(m_pos_x, 0.0f);
 
-		if (graphics::getKeyState(graphics::SCANCODE_UP) && isPlayerGrounded())
+		if (graphics::getKeyState(graphics::SCANCODE_UP) && isCharacterGrounded())
 			m_vy = m_accel_vertical;
 
 		m_pos_y += delta_time * m_vy;
@@ -44,19 +45,21 @@ void Player::shootGun()
 {
 	if (m_shots_left <= 0) return;
 
+	if (sample_uniform() <= (10 - m_shots_left)/20.0f) m_state->updateCops(1);
 	--m_shots_left;
-	float curr_pos_y = std::min(m_state->getFloorLevel() - m_player_height / 2.0f, m_pos_y);
-	Ammo* shot = new Ammo(getCurrentPosX(), curr_pos_y);
+	float curr_pos_y = std::min(m_state->getFloorLevel() - getCharacterHeight() / 2.0f, m_pos_y);
+	Ammo* shot = new Ammo(getCharacterPosX(), curr_pos_y);
 	shot->init();
 	m_gun.push_back(shot);
 }
 
 void Player::update(float dt)
 {
-	/* HANDLE PLAYER */
-	movePlayer(dt);
+	Character::update(dt);
 
-	m_state->m_player_global_offset_y = m_state->getCanvasHeight() / 2.0f - m_pos_y;
+	/* HANDLE PLAYER */
+	moveCharacter(dt);
+
 	m_state->m_background_global_offset_x = -m_pos_x;
 
 	/* HANDLE GUN */
@@ -68,38 +71,23 @@ void Player::update(float dt)
 		if (shot) shot->update(dt);
 
 	if (m_gun.size() > 0 &&
-		std::abs(getCurrentPosX() - m_gun.back()->m_pos_x) >= m_gun.back()->getMaxDistance())
+		std::abs(getCharacterPosX() - m_gun.back()->m_pos_x) >= m_gun.back()->getMaxDistance())
 	{
 		delete m_gun.back();
 		m_gun.pop_back();
 	}
-	GameObject::update(dt);
 }
 
 void Player::init()
 {
 	m_pos_x = 0;
-	m_pos_y = m_state->getFloorLevel() - m_player_height / 2.0f;
-
-	m_state->m_player_global_offset_y = 0;
-
-	m_brush_player.fill_opacity = 1.0f;
-	m_brush_player.outline_opacity = 0.0f;
-	m_brush_player.texture = m_state->getAssetPath() + "character.png";
-
-	m_brush_player_debugging.fill_opacity = 0.5f;
-	m_brush_player_debugging.fill_color[0] = 1.0f;
-	m_brush_player_debugging.fill_color[1] = 0.0f;
-	m_brush_player_debugging.fill_color[2] = 0.0f;
+	m_asset_full_path = m_state->getAssetPath() + "character.png";
+	Character::init();
 }
 
 void Player::draw()
 {
-	m_pos_y = std::min(m_state->getFloorLevel() - m_player_height / 2.0f, m_pos_y);
-	graphics::drawRect(getCurrentPosX(), m_pos_y, m_player_width, m_player_height, m_brush_player);
-
-	if (m_state->m_debugging)
-		graphics::drawRect(getCurrentPosX(), m_pos_y, m_player_width, m_player_height, m_brush_player_debugging);
+	Character::draw();
 
 	for (auto shot : m_gun)
 		if (shot) shot->draw();

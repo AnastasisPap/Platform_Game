@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <string>
 #include <sgg/graphics.h>
 
@@ -14,13 +15,12 @@ private:
     static GameState* m_unique_instance;
 	class Player* m_player = 0;
 	class Level* m_current_level = 0;
-	bool m_cops_active = false;
+	int m_cops_active = 0;
     GameState();
 
 // Make this private/protected and use player class as friend or add setter/getter to access this
 public:
 	float m_background_global_offset_x = 0.0f;
-    float m_player_global_offset_y = 0.0f;
 	bool m_debugging = false;
 
 	void init();
@@ -34,7 +34,7 @@ public:
 	float getCanvasWidth() { return m_canvas_width; }
 	float getCanvasHeight() { return m_canvas_height; }
 
-	void updateCops() { m_cops_active != m_cops_active; }
+	void updateCops(int update) { m_cops_active += update; std::cout << m_cops_active << " cops chasing you." << std::endl; }
 	class Player* getPlayer() { return m_player; }
 	float getFloorLevel() { return m_floor_level; }
 };

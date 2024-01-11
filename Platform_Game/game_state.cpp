@@ -1,9 +1,9 @@
 #include <iostream>
+#include <thread>
+#include <chrono>
 #include "game_state.h"
 #include "player.h"
 #include "level.h"
-#include <thread>
-#include <chrono>
 
 GameState::GameState() {}
 
@@ -18,7 +18,7 @@ void GameState::init()
     m_current_level = new Level();
     m_current_level->init();
 
-    m_player = new Player("Player");
+    m_player = new Player("Player", 1.5f);
     m_player->init();
 
     graphics::preloadBitmaps(getAssetPath());

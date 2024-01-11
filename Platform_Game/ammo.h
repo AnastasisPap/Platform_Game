@@ -10,7 +10,7 @@ class Ammo : public GameObject, public Box
 	const int m_ammo_height = 4;
 	const int m_ammo_width = 10;
 	const float m_ammo_velocity = 5.0f;
-	const float m_max_distance = 0.75 * m_state->getCanvasWidth();
+	const float m_max_distance = m_state->getCanvasWidth() / 2.0f;
 public:
 	void update(float dt) override;
 	void init() override;

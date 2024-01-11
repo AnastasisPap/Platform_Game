@@ -17,8 +17,7 @@ Levels:
  - Level 3: from bus stop to University (31/1/2024)
 
 Characters:
- - Pedestrians: the aim of the pedestrians is to make the main characterbe late, e.g. by walking slow (15/1/2024)
-     - Shoots them (if they do this more than once, police is called for example)
+ - Pedestrians: the aim of the pedestrians is to make the main characterbe late, e.g. by walking slow (31/1/2024)
      - Finds buildings/stairs/etc. and jumps above them
  - Policemen: chaces the player if they shoot too many times, they can't chace if they get in bus/uni (31/1/2024)
  - Criminals: they try to shoot the main character to steal their stuff, they appear from the bus stop to the uni (31/1/2024)

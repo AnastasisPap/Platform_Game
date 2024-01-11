@@ -1,11 +1,10 @@
 #include <algorithm>
 #include <iostream>
-#include <stdio.h>
-#include <time.h>
 #include "level.h"
 #include "game_state.h"
 #include "player.h"
 #include "ammo.h"
+#include "config.h"
 
 void Level::update(float dt)
 {
@@ -25,8 +24,7 @@ void Level::update(float dt)
 	int time = graphics::getGlobalTime();
 	if (time % 1000 <= dt && m_pedestrians_left > 0)
 	{
-		float uniform_distr_sample = (float)rand() / RAND_MAX;
-		if (uniform_distr_sample <= m_pedestrian_spawn_probability) {
+		if (sample_uniform() <= m_pedestrian_spawn_probability) {
 			--m_pedestrians_left;
 			Pedestrian* pedestrian = new Pedestrian("pedestrian_" + std::to_string(m_characters.size()));
 			pedestrian->init();
@@ -40,7 +38,6 @@ void Level::update(float dt)
 
 void Level::init()
 {
-	srand(time(NULL));
 	m_brush_background.outline_opacity = 0.0f;
 	m_brush_background.texture = m_state->getAssetPath() + "landscape_1.png";
 
@@ -124,9 +121,9 @@ void Level::checkCollisions()
 	for (Pedestrian* character : m_characters)
 	{
 		if (std::abs(m_state->getPlayer()->m_pos_x - character->m_pos_x) <=
-			std::max(m_state->getPlayer()->getPlayerWidth(), character->getPedestrianWidth()) &&
+			std::max(m_state->getPlayer()->getCharacterWidth(), character->getCharacterWidth()) &&
 				m_state->getPlayer()->m_pos_y >= character->m_pos_y)
-			m_state->getPlayer()->pushPlayer(character->getPedestrianMass());
+			m_state->getPlayer()->pushPlayer(character->getCharacterMass());
 	}
 }
 
@@ -142,8 +139,8 @@ void Level::checkShot()
 		while (pedestrian_it != m_characters.end())
 		{
 			Pedestrian* pedestrian = *pedestrian_it;
-			if (std::abs(ammo->m_pos_x - m_state->getCanvasWidth() / 2.0f - m_state->m_background_global_offset_x - pedestrian->m_pos_x) <= pedestrian->getPedestrianWidth() &&
-				std::abs(ammo->m_pos_y - pedestrian->m_pos_y) <= pedestrian->getPedestrianHeight() / 2.0f)
+			if (std::abs(ammo->m_pos_x - m_state->getCanvasWidth() / 2.0f - m_state->m_background_global_offset_x - pedestrian->m_pos_x) <= pedestrian->getCharacterWidth() &&
+				std::abs(ammo->m_pos_y - pedestrian->m_pos_y) <= pedestrian->getCharacterHeight() / 2.0f)
 			{
 				got_shot = true;
 				pedestrian_it = m_characters.erase(pedestrian_it);
