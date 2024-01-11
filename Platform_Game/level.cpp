@@ -132,10 +132,9 @@ void Level::checkCollisions()
 
 void Level::checkShot()
 {
-	std::list<Ammo*> gun = m_state->getPlayer()->getGun();
-	std::list<Ammo*>::iterator ammo_it = gun.begin();
+	std::list<Ammo*>::iterator ammo_it = (*m_state->getPlayer()->getGun()).begin();
 
-	while (ammo_it != gun.end())
+	while (ammo_it != (*m_state->getPlayer()->getGun()).end())
 	{
 		Ammo* ammo = *ammo_it;
 		std::list<Pedestrian*>::iterator pedestrian_it = m_characters.begin();
@@ -153,7 +152,7 @@ void Level::checkShot()
 			else ++pedestrian_it;
 		}
 		if (got_shot) {
-			ammo_it = gun.erase(ammo_it);
+			ammo_it = (*m_state->getPlayer()->getGun()).erase(ammo_it);
 			delete ammo;
 		}
 		else ++ammo_it;

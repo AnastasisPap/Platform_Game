@@ -23,7 +23,6 @@ class Player : public GameObject, public Box
 	float m_accel_horizontal = 0.5f;
 
 	int m_shots_left = 10;
-	std::list<Ammo*> m_gun;
 
 	void movePlayer(float dt);
 	void shootGun();
@@ -33,6 +32,8 @@ class Player : public GameObject, public Box
 		m_vx = 0;
 	}
 	float getCurrentPosX() { return m_pos_x + m_state->m_background_global_offset_x + m_state->getCanvasWidth() / 2.0f; }
+
+	std::list<Ammo*> m_gun;
 public:
 	float m_vy = 0.0f;
 	float m_vx = 0.0f;
@@ -48,5 +49,5 @@ public:
 	float getPlayerWidth() { return m_player_width; }
 	float getPlayerHeight() { return m_player_height; }
 	bool isPlayerGrounded() { return (m_pos_y >= m_state->getFloorLevel() - m_player_height / 2.0f); }
-	std::list<Ammo*> getGun() { return m_gun; }
+	std::list<Ammo*>* getGun() { return &m_gun; }
 };

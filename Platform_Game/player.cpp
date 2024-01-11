@@ -102,5 +102,5 @@ void Player::draw()
 		graphics::drawRect(getCurrentPosX(), m_pos_y, m_player_width, m_player_height, m_brush_player_debugging);
 
 	for (auto shot : m_gun)
-		if (shot != nullptr) shot->draw();
+		if (shot) shot->draw();
 }

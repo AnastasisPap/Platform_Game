@@ -1,4 +1,21 @@
-﻿  player.cpp
+﻿  game_state.cpp
 C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\game_state.h(37,36): warning C4552: '!=': result of expression not used
 C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\ammo.h(13,36): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\pedestrian.h(22,13): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\pedestrian.h(24,35): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\pedestrian.h(32,42): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\level.h(24,45): warning C4305: 'initializing': truncation from 'double' to 'const float'
+  level.cpp
+C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\game_state.h(37,36): warning C4552: '!=': result of expression not used
+C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\ammo.h(13,36): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\pedestrian.h(22,13): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\pedestrian.h(24,35): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\pedestrian.h(32,42): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\level.h(24,45): warning C4305: 'initializing': truncation from 'double' to 'const float'
+C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\level.cpp(25,11): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\level.cpp(43,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  player.cpp
+C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\game_state.h(37,36): warning C4552: '!=': result of expression not used
+C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\ammo.h(13,36): warning C4244: 'initializing': conversion from 'double' to 'const float', possible loss of data
+  Generating Code...
   Platform_Game.vcxproj -> C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\bin\Platform_Game.exe
