@@ -1,8 +1,11 @@
 #include <algorithm>
 #include <iostream>
+#include <stdio.h>
+#include <time.h>
 #include "level.h"
 #include "game_state.h"
 #include "player.h"
+#include "ammo.h"
 
 void Level::update(float dt)
 {
@@ -16,12 +19,28 @@ void Level::update(float dt)
 			m_state->getFloorLevel(), m_state->getCanvasWidth(), 1));
 	}
 
+	for (auto p_character : m_characters)
+		if (p_character) p_character->update(dt);
+
+	int time = graphics::getGlobalTime();
+	if (time % 1000 <= dt && m_pedestrians_left > 0)
+	{
+		float uniform_distr_sample = (float)rand() / RAND_MAX;
+		if (uniform_distr_sample <= m_pedestrian_spawn_probability) {
+			--m_pedestrians_left;
+			Pedestrian* pedestrian = new Pedestrian("pedestrian_" + std::to_string(m_characters.size()));
+			pedestrian->init();
+			m_characters.push_back(pedestrian);
+		}
+	}
+
 	checkCollisions();
 	GameObject::update(dt);
 }
 
 void Level::init()
 {
+	srand(time(NULL));
 	m_brush_background.outline_opacity = 0.0f;
 	m_brush_background.texture = m_state->getAssetPath() + "landscape_1.png";
 
@@ -46,6 +65,7 @@ void Level::init()
 void Level::draw()
 {
 	drawBackground();
+	checkShot();
 
 	if (m_state->getPlayer()->isActive())
 		m_state->getPlayer()->draw();
@@ -54,6 +74,23 @@ void Level::draw()
 		if (p_gob) p_gob->draw();
 	for (auto p_gob : m_dynamic_objects)
 		if (p_gob) p_gob->draw();
+
+	std::list<Pedestrian*>::iterator it = m_characters.begin();
+	while (it != m_characters.end())
+	{
+		Pedestrian* pedestrian = *it;
+		if (pedestrian && pedestrian->isOut())
+		{
+			it = m_characters.erase(it);
+			delete pedestrian;
+		}
+		else if (pedestrian)
+		{
+			pedestrian->draw();
+			++it;
+		}
+		else ++it;
+	}
 
 	for (int i = 0; i < m_blocks.size(); i++)
 		drawBlock(i);
@@ -84,18 +121,43 @@ void Level::drawBlock(int i)
 
 void Level::checkCollisions()
 {
-	/*
-	for (auto& box : m_blocks)
+	for (Pedestrian* character : m_characters)
 	{
-		float offset = 0.0f;
-		std::cout << m_state->getPlayer()->m_pos_y << " " << box.m_pos_y << std::endl;
-		if (offset = m_state->getPlayer()->m_pos_y - box.m_pos_y > 0)
-		{
-			std::cout << "OK" << std::endl;
-			m_state->getPlayer()->m_pos_y
-		}
+		if (std::abs(m_state->getPlayer()->m_pos_x - character->m_pos_x) <=
+			std::max(m_state->getPlayer()->getPlayerWidth(), character->getPedestrianWidth()) &&
+				m_state->getPlayer()->m_pos_y >= character->m_pos_y)
+			m_state->getPlayer()->pushPlayer(character->getPedestrianMass());
 	}
-	*/
+}
+
+void Level::checkShot()
+{
+	std::list<Ammo*> gun = m_state->getPlayer()->getGun();
+	std::list<Ammo*>::iterator ammo_it = gun.begin();
+
+	while (ammo_it != gun.end())
+	{
+		Ammo* ammo = *ammo_it;
+		std::list<Pedestrian*>::iterator pedestrian_it = m_characters.begin();
+		bool got_shot = false;
+		while (pedestrian_it != m_characters.end())
+		{
+			Pedestrian* pedestrian = *pedestrian_it;
+			if (std::abs(ammo->m_pos_x - m_state->getCanvasWidth() / 2.0f - m_state->m_background_global_offset_x - pedestrian->m_pos_x) <= pedestrian->getPedestrianWidth() &&
+				std::abs(ammo->m_pos_y - pedestrian->m_pos_y) <= pedestrian->getPedestrianHeight() / 2.0f)
+			{
+				got_shot = true;
+				pedestrian_it = m_characters.erase(pedestrian_it);
+				delete pedestrian;
+			}
+			else ++pedestrian_it;
+		}
+		if (got_shot) {
+			ammo_it = gun.erase(ammo_it);
+			delete ammo;
+		}
+		else ++ammo_it;
+	}
 }
 
 Level::Level(const std::string& name)
@@ -108,4 +170,6 @@ Level::~Level()
 		if (p_gob) delete p_gob;
 	for (auto p_gob : m_dynamic_objects)
 		if (p_gob) delete p_gob;
+	for (auto p_character : m_characters)
+		if (p_character) delete p_character;
 }

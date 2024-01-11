@@ -5,6 +5,7 @@
 #include <sgg/graphics.h>
 #include "game_object.h"
 #include "player.h"
+#include "pedestrian.h"
 
 class Level : public GameObject
 {
@@ -18,13 +19,18 @@ class Level : public GameObject
 
 	std::vector<Box> m_blocks;
 	std::vector<std::string> m_block_names;
+
+	std::list<Pedestrian*> m_characters;
+	const float m_pedestrian_spawn_probability = 0.2;
+	int m_pedestrians_left = 1;
+
 	const float m_block_size = 20.0f;
 	graphics::Brush m_block_brush;
 	graphics::Brush m_block_brush_debug;
 	void drawBlock(int i);
 	void checkCollisions();
 	void drawBackground();
-
+	void checkShot();
 public:
 	void update(float dt) override;
 	void init() override;
