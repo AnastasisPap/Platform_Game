@@ -6,6 +6,7 @@
 #include "game_object.h"
 #include "player.h"
 #include "pedestrian.h"
+#include "stairs.h"
 
 class Level : public GameObject
 {
@@ -16,23 +17,27 @@ class Level : public GameObject
 	void drawBackground();
 
 	/* Objects */
-	std::vector<GameObject*> m_static_objects;
-	std::list<GameObject*> m_dynamic_objects;
 	std::vector<Box> m_blocks;
 	std::vector<std::string> m_block_names;
 	const float m_block_size = 20.0f;
 	graphics::Brush m_block_brush;
 	graphics::Brush m_block_brush_debug;
 	void drawBlock(int i);
+	std::vector<Stairs*> m_stairs;
 
 	/* Characters */
 	std::list<Pedestrian*> m_characters;
-	const float m_pedestrian_spawn_probability = 0.25;
 	int m_pedestrians_left = 15;
 	void checkShot();
 
 	/* Level */
 	void checkCollisions();
+
+	/* Probabilities */
+	const float m_pedestrian_spawn_probability = 0.25f;
+	const float m_stairs_spawn_probability = 0.6f;
+	void spawnGameObjects(float dt);
+	float sampleStairsPosX();
 public:
 	void update(float dt) override;
 	void init() override;

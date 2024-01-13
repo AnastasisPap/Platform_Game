@@ -32,7 +32,9 @@ void Player::moveCharacter(float dt)
 			move += m_speed_horizontal;
 		m_pos_x += delta_time * move;
 		m_pos_x = std::max(m_pos_x, 0.0f);
-
+	}
+	if (!m_is_ascending)
+	{
 		if (graphics::getKeyState(graphics::SCANCODE_UP) && isCharacterGrounded())
 			m_vy = m_accel_vertical;
 
@@ -47,7 +49,7 @@ void Player::shootGun()
 
 	if (sample_uniform() <= (10 - m_shots_left)/20.0f) m_state->updateCops(1);
 	--m_shots_left;
-	float curr_pos_y = std::min(m_state->getFloorLevel() - getCharacterHeight() / 2.0f, m_pos_y);
+	float curr_pos_y = std::min(m_state->getFloorLevel() - m_height / 2.0f, m_pos_y);
 	Ammo* shot = new Ammo(getCharacterPosX(), curr_pos_y);
 	shot->init();
 	m_gun.push_back(shot);
@@ -82,6 +84,7 @@ void Player::init()
 {
 	m_pos_x = 0;
 	m_asset_full_path = m_state->getAssetPath() + "character.png";
+	m_height_to_width = 1.8f;
 	Character::init();
 }
 

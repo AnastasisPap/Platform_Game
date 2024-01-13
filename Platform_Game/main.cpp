@@ -10,25 +10,25 @@ Project deadline: 11/2/2024 at 23:00
 
 Help / Test:
  - Pedestrians are annoyed when you approach them and they push you away
+ - Add timer to current level
 
 Levels:
- - Level 1: from house to metro (31/1/2024)
+ - Level 1: from house to metro (31/1/2024). TODO:
+     - add cops
+     - add text to inform the players
+     - add pixelated house to denote start
+     - add pixelated metro station to denote end
  - Level 2: from metro to bus stop (31/1/2024)
  - Level 3: from bus stop to University (31/1/2024)
 
 Characters:
- - Pedestrians: the aim of the pedestrians is to make the main characterbe late, e.g. by walking slow (31/1/2024)
-     - Finds buildings/stairs/etc. and jumps above them
  - Policemen: chaces the player if they shoot too many times, they can't chace if they get in bus/uni (31/1/2024)
+     - If the player is caught then the game stops
  - Criminals: they try to shoot the main character to steal their stuff, they appear from the bus stop to the uni (31/1/2024)
  - Dapites: when the main character arrives at the university they try to talk to it and make it late (31/1/2024)
  - Ticket validators: with a small chance in the bus there are ticket validators and if that's the case they lose (and they don't have a ticket)
    - Some time in the game the player can collect a ticket (which will take some time to do so), if they get the ticket
     and there is a validator they don't lose (31/1/2024)
-
-Objects:
- - Stairs: the main character uses them to get on a higher level and jump over pedestrians (16/1/2024)
- - Higher level roads: the main character can go there to jump over pedestrians (16/1/2024)
 
 OOP Structure:
  - The characters know information about each other

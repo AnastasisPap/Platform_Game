@@ -15,7 +15,8 @@ void Character::update(float dt)
 
 void Character::init()
 {
-	m_pos_y = m_state->getFloorLevel() - getCharacterHeight() / 2.0f;
+	m_pos_y = m_state->getFloorLevel() - m_height / 2.0f;
+	m_height = m_width * m_height_to_width;
 	m_brush_character.fill_opacity = 1.0f;
 	m_brush_character.outline_opacity = 0.0f;
 	m_brush_character.texture = m_asset_full_path;
@@ -28,9 +29,9 @@ void Character::init()
 
 void Character::draw()
 {
-	m_pos_y = std::min(m_state->getFloorLevel() - m_character_height / 2.0f, m_pos_y);
-	graphics::drawRect(getCharacterPosX(), getCharacterPosY(), m_character_width, m_character_height, m_brush_character);
+	m_pos_y = std::min(m_state->getFloorLevel() - m_height / 2.0f, m_pos_y);
+	graphics::drawRect(getCharacterPosX(), getCharacterPosY(), m_width, m_height, m_brush_character);
 
 	if (m_state->m_debugging)
-		graphics::drawRect(getCharacterPosX(), getCharacterPosY(), m_character_width, m_character_height, m_brush_character_debugging);
+		graphics::drawRect(getCharacterPosX(), getCharacterPosY(), m_width, m_height, m_brush_character_debugging);
 }

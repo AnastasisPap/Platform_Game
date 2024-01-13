@@ -23,6 +23,7 @@ void Pedestrian::init()
 
 	int pedestrian_num = sample_int_uniform(1, 3);
 	m_asset_full_path = m_state->getAssetPath() + "pedestrian_" + std::to_string(pedestrian_num) + ".png";
+	m_height_to_width = m_height_to_width_ratios[pedestrian_num - 1];
 	Character::init();
 }
 

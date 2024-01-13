@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 float sample_uniform(float lower_bound = 0.0f, float upper_bound = 1.0f);
 

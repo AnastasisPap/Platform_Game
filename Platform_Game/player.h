@@ -8,8 +8,6 @@
 
 class Player : public Character
 {
-	float getCharacterPosX() override { return m_pos_x + m_state->m_background_global_offset_x + m_state->getCanvasWidth() / 2.0f; }
-
 	bool m_is_pushed = false;
 	bool m_is_accelerating = true;
 
@@ -25,11 +23,12 @@ class Player : public Character
 	void shootGun();
 	void moveCharacter(float dt) override;
 public:
-	Player(std::string name, float speed) : Character(name, speed, 10) {}
+	Player(std::string name, float speed) : Character(name, speed, 10, 30.0f) {}
 
 	void update(float dt);
 	void init();
 	void draw();
+	float getCharacterPosX() override { return m_pos_x + m_state->m_background_global_offset_x + m_state->getCanvasWidth() / 2.0f; }
 
 	void pushPlayer(int mass) {
 		m_is_pushed = true;
