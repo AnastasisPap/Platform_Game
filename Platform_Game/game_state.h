@@ -14,9 +14,14 @@ private:
 	float m_floor_level = m_canvas_height / 1.27f;
     static GameState* m_unique_instance;
 	class Player* m_player = 0;
-	class Level* m_current_level = 0;
-	int m_cops_active = 0;
+	class Level* m_current_level = nullptr;
+	class Cop* m_cop = 0;
+	bool m_has_game_finished = false;
+	bool m_has_game_started = false;
     GameState();
+
+	graphics::Brush m_brush_text;
+	graphics::Brush m_brush_text_important;
 
 // Make this private/protected and use player class as friend or add setter/getter to access this
 public:
@@ -26,6 +31,7 @@ public:
 	void init();
 	void draw();
 	void update(float dt);
+	void drawStartText();
 
     static GameState* getInstance();
 	~GameState();
@@ -34,7 +40,11 @@ public:
 	float getCanvasWidth() { return m_canvas_width; }
 	float getCanvasHeight() { return m_canvas_height; }
 
-	void updateCops(int update) { m_cops_active += update; std::cout << m_cops_active << " cops chasing you." << std::endl; }
+	void spawnCop();
 	class Player* getPlayer() { return m_player; }
+	class Cop* getCop() { return (m_cop ? m_cop : nullptr); }
 	float getFloorLevel() { return m_floor_level; }
+	float getLevelMaxWidth();
+	void finishGame() { m_has_game_finished = true; }
+	bool hasGameFinished() { return m_has_game_finished; }
 };

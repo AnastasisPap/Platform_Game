@@ -5,43 +5,36 @@
 #include <sgg/graphics.h>
 #include "game_object.h"
 #include "player.h"
-#include "pedestrian.h"
-#include "stairs.h"
+#include "character.h"
 
 class Level : public GameObject
 {
-	/* Background */
+	/* Brushes */
 	graphics::Brush m_brush_background;
+	graphics::Brush m_brush_debugging;
+	graphics::Brush m_brush_ticket;
+	graphics::Brush m_brush_star;
+	graphics::Brush m_brush_text;
+
+	void drawTicket();
+	const int m_max_seconds;
+	void checkShot();
+protected:
 	int m_center_x = 0;
 	int m_num_of_tiles = 2;
-	void drawBackground();
-
-	/* Objects */
-	std::vector<Box> m_blocks;
-	std::vector<std::string> m_block_names;
-	const float m_block_size = 20.0f;
-	graphics::Brush m_block_brush;
-	graphics::Brush m_block_brush_debug;
-	void drawBlock(int i);
-	std::vector<Stairs*> m_stairs;
-
-	/* Characters */
-	std::list<Pedestrian*> m_characters;
-	int m_pedestrians_left = 15;
-	void checkShot();
-
-	/* Level */
+	const float m_max_num_of_widths;
+	void checkTicketRetrieval();
+	bool hasCollidedWithPlayer(Character* character);
 	void checkCollisions();
-
-	/* Probabilities */
-	const float m_pedestrian_spawn_probability = 0.25f;
-	const float m_stairs_spawn_probability = 0.6f;
-	void spawnGameObjects(float dt);
-	float sampleStairsPosX();
+	void drawBackground();
+	Box* m_ticket = nullptr;
+	std::list<Character*> m_characters;
 public:
 	void update(float dt) override;
 	void init() override;
 	void draw() override;
-	Level(const std::string& name = "Going to the Metro");
+	float getLevelFinishPosX() { return (m_max_num_of_widths - 0.5f) * m_state->getCanvasWidth(); }
+	Level(const std::string& name, const int& max_seconds, const float& max_num_of_widths) :
+		GameObject(name), m_max_seconds(max_seconds), m_max_num_of_widths(max_num_of_widths) {};
 	~Level();
 };

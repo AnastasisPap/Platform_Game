@@ -17,6 +17,8 @@ class Player : public Character
 		m_vx = 0;
 	}
 
+	bool m_has_ticket = false;
+
 	/* Gun */
 	std::list<Ammo*> m_gun;
 	int m_shots_left = 10;
@@ -35,4 +37,6 @@ public:
 		m_accel_horizontal = mass / 2.0f;
 	}
 	std::list<Ammo*>* getGun() { return &m_gun; }
+	bool hasTicket() { return m_has_ticket; }
+	void retrievedTicket() { m_has_ticket = true; }
 };

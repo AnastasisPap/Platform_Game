@@ -31,7 +31,7 @@ void Player::moveCharacter(float dt)
 		if (graphics::getKeyState(graphics::SCANCODE_RIGHT))
 			move += m_speed_horizontal;
 		m_pos_x += delta_time * move;
-		m_pos_x = std::max(m_pos_x, 0.0f);
+		m_pos_x = std::min(std::max(m_pos_x, 0.0f), m_state->getLevelMaxWidth());
 	}
 	if (!m_is_ascending)
 	{
@@ -47,7 +47,7 @@ void Player::shootGun()
 {
 	if (m_shots_left <= 0) return;
 
-	if (sample_uniform() <= (10 - m_shots_left)/20.0f) m_state->updateCops(1);
+	if (sample_uniform() <= (10 - m_shots_left)/20.0f) m_state->spawnCop();
 	--m_shots_left;
 	float curr_pos_y = std::min(m_state->getFloorLevel() - m_height / 2.0f, m_pos_y);
 	Ammo* shot = new Ammo(getCharacterPosX(), curr_pos_y);

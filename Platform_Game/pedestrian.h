@@ -11,7 +11,7 @@ class Pedestrian: public Character
 	void moveCharacter(float dt) override;
 public:
 	Pedestrian(std::string name) :
-		Character(name, sample_int_uniform(1, 3), sample_int_uniform(1, 20), sample_uniform(30.0f, 45.0f)) {}
+		Character(name, sample_uniform(1, 3), sample_int_uniform(1, 20), sample_uniform(30.0f, 45.0f)) {}
 
 	void update(float dt);
 	void init();

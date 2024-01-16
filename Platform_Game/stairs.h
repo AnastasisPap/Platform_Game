@@ -15,7 +15,7 @@ class Stairs : public GameObject, public Box
 	const float m_vertical_stick_width = 5.0f;
 	const float m_stick_gap = 15.0f;
 	const float m_vertical_stick_extra_height = 10.0f;
-	const int m_max_width = 55;
+	const float m_max_width = 55.0f;
 
 	float m_horizontal_stick_width = 0.0f;
 	float m_vertical_stick_height = 0.0f;
@@ -26,8 +26,8 @@ public:
 	{
 		m_pos_x = pos_x;
 		m_pos_y = pos_y;
-		m_width = sample_int_uniform(15, m_max_width);
-		m_height = sample_int_uniform(40, 100);
+		m_width = sample_uniform(15.0f, m_max_width);
+		m_height = sample_uniform(40.0f, 100.0f);
 	}
 	~Stairs() {}
 	void draw() override;

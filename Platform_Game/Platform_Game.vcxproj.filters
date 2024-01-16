@@ -48,6 +48,12 @@
     <ClCompile Include="stairs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cop.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="first_level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game_state.h">
@@ -81,6 +87,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stairs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="first_level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

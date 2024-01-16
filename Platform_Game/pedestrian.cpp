@@ -1,7 +1,5 @@
-#include <iostream>
 #include <algorithm>
 #include <cmath>
-#include <sgg/graphics.h>
 #include "pedestrian.h"
 
 void Pedestrian::moveCharacter(float dt)
@@ -10,16 +8,13 @@ void Pedestrian::moveCharacter(float dt)
 	m_pos_x -= m_speed_horizontal * delta_time;
 }
 
-void Pedestrian::update(float dt)
-{
-	Character::update(dt);
-}
+void Pedestrian::update(float dt) { Character::update(dt); }
 
 void Pedestrian::init()
 {
-	int width = m_state->getCanvasWidth();
-	int min_pos_x = -1 * m_state->m_background_global_offset_x / width + 1;
-	m_pos_x = sample_int_uniform(min_pos_x * width, (min_pos_x + 2) * width);
+	float width = m_state->getCanvasWidth();
+	float min_pos_x = -1 * m_state->m_background_global_offset_x / width + 1;
+	m_pos_x = sample_uniform(min_pos_x * width, (min_pos_x + 2) * width);
 
 	int pedestrian_num = sample_int_uniform(1, 3);
 	m_asset_full_path = m_state->getAssetPath() + "pedestrian_" + std::to_string(pedestrian_num) + ".png";
@@ -27,7 +22,4 @@ void Pedestrian::init()
 	Character::init();
 }
 
-void Pedestrian::draw()
-{
-	Character::draw();
-}
+void Pedestrian::draw() { Character::draw(); }

@@ -17,5 +17,5 @@ public:
 	virtual void init() {}
 	virtual ~GameObject() {}
 	bool isActive() { return m_active; }
-	bool setActive(bool a) { m_active = a; }
+	void setActive(bool a) { m_active = a; }
 };
