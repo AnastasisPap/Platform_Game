@@ -1,6 +1,0 @@
-﻿  pedestrian.cpp
-C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\pedestrian.h(13,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\pedestrian.cpp(20,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\pedestrian.cpp(21,16): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\Platform_Game\pedestrian.cpp(22,30): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-  Platform_Game.vcxproj -> C:\Users\Anastasis\OneDrive\Desktop\Programming\Platform_Game\bin\Platform_Game.exe
