@@ -18,12 +18,14 @@ private:
 	class Cop* m_cop = 0;
 	bool m_has_game_finished = false;
 	bool m_has_game_started = false;
+	bool m_has_won = false;
+	std::string m_lost_reason = "";
     GameState();
 
 	graphics::Brush m_brush_text;
 	graphics::Brush m_brush_text_important;
+	const float m_validator_prob = 0.7f;
 
-// Make this private/protected and use player class as friend or add setter/getter to access this
 public:
 	float m_background_global_offset_x = 0.0f;
 	bool m_debugging = false;
@@ -37,14 +39,17 @@ public:
 	~GameState();
 
 	std::string getAssetPath() { return m_asset_path; }
-	float getCanvasWidth() { return m_canvas_width; }
-	float getCanvasHeight() { return m_canvas_height; }
 
 	void spawnCop();
+	void stopCop();
+
 	class Player* getPlayer() { return m_player; }
 	class Cop* getCop() { return (m_cop ? m_cop : nullptr); }
-	float getFloorLevel() { return m_floor_level; }
+	void finishGame(std::string reason = "") { m_has_game_finished = true; m_lost_reason = reason; }
+
 	float getLevelMaxWidth();
-	void finishGame() { m_has_game_finished = true; }
-	bool hasGameFinished() { return m_has_game_finished; }
+	float getFloorLevel() const { return m_floor_level; }
+	bool hasGameFinished() const { return m_has_game_finished; }
+	float getCanvasWidth() const { return m_canvas_width; }
+	float getCanvasHeight() const { return m_canvas_height; }
 };

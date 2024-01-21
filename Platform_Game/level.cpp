@@ -2,10 +2,49 @@
 #include <iostream>
 #include "level.h"
 #include "game_state.h"
-#include "player.h"
 #include "config.h"
-#include "stairs.h"
 #include "cop.h"
+
+void Level::spawnGameObjects(float dt)
+{
+	int time = (int)graphics::getGlobalTime();
+	if (time % 14000 <= dt && m_stairs.size() > 0) m_stairs.erase(m_stairs.begin());
+
+	if (time % 7000 <= dt)
+	{
+		float pos_x = sampleStairsPosX();
+		float pos_y = m_state->getFloorLevel() - 100;
+		Stairs* stairs = new Stairs(pos_x, pos_y);
+		stairs->init();
+		m_stairs.push_back(stairs);
+
+		int total_time = graphics::getGlobalTime() / 1000 - m_starting_time;
+		if (!m_ticket && total_time >= m_max_seconds / 2.0f)
+			m_ticket = new Box(pos_x, pos_y - stairs->m_height - 8.0f, 24.0f, 17.0f);
+	}
+}
+
+float Level::sampleStairsPosX()
+{
+	float lb = -1 * m_state->m_background_global_offset_x + m_state->getCanvasWidth() / 2.0f;
+	float up = -1 * m_state->m_background_global_offset_x + 1.5f * m_state->getCanvasWidth();
+	up = std::min(up, getLevelFinishPosX() - 50.0f);
+	float pos_x;
+	int num_of_samples = 0;
+	bool found_pos_x = false;
+
+	while (!found_pos_x || num_of_samples > 15)
+	{
+		pos_x = sample_uniform(lb, up);
+		found_pos_x = true;
+		for (Stairs* stairs : m_stairs)
+			if (std::abs(pos_x - stairs->m_pos_x) <= (stairs->getMaxWidth() / 2.0f + stairs->m_width / 2.0f))
+				found_pos_x = false;
+		++num_of_samples;
+	}
+
+	return pos_x;
+}
 
 void Level::checkShot()
 {
@@ -19,8 +58,7 @@ void Level::checkShot()
 		while (pedestrian_it != m_characters.end())
 		{
 			Character* pedestrian = *pedestrian_it;
-			if (std::abs(ammo->m_pos_x - m_state->getCanvasWidth() / 2.0f - m_state->m_background_global_offset_x - pedestrian->m_pos_x) <= pedestrian->m_width &&
-				std::abs(ammo->m_pos_y - pedestrian->m_pos_y) <= pedestrian->m_height / 2.0f)
+			if (ammo->checkShotCharacter(pedestrian))
 			{
 				got_shot = true;
 				pedestrian_it = m_characters.erase(pedestrian_it);
@@ -38,8 +76,9 @@ void Level::checkShot()
 
 void Level::update(float dt)
 {
+	checkCollisions();
 	int time = graphics::getGlobalTime() / 1000;
-	if (m_max_seconds - time <= 0) m_state->finishGame();
+	if (m_max_seconds - time + m_starting_time <= 0) m_state->finishGame("Time run out");
 
 	if (m_state->getPlayer())
 		m_state->getPlayer()->update(dt);
@@ -54,6 +93,17 @@ void Level::update(float dt)
 
 	for (auto p_character : m_characters)
 		if (p_character) p_character->update(dt);
+
+	bool is_player_ascending = false;
+	for (auto stairs : m_stairs)
+	{
+		if (stairs)
+		{
+			stairs->update(dt);
+			is_player_ascending = is_player_ascending || stairs->isAscending(m_state->getPlayer());
+		}
+	}
+	m_state->getPlayer()->toggleAscending(is_player_ascending);
 
 	GameObject::update(dt);
 }
@@ -77,6 +127,7 @@ void Level::init()
 	m_brush_text.fill_color[0] = 1.0f;
 	m_brush_text.fill_color[1] = 0.0f;
 	m_brush_text.fill_color[2] = 1.0f;
+	m_starting_time = (int)(graphics::getGlobalTime() / 1000);
 }
 
 void Level::draw()
@@ -112,7 +163,10 @@ void Level::draw()
 		else ++it;
 	}
 
-	int time = m_max_seconds - graphics::getGlobalTime() / 1000;
+	for (auto stairs : m_stairs)
+		if (stairs) stairs->draw();
+
+	int time = m_max_seconds - graphics::getGlobalTime() / 1000 + m_starting_time;
 	graphics::drawText(30, 30, 20.0f, "Time left (sec): " + std::to_string(time), m_brush_text);
 }
 
@@ -128,16 +182,14 @@ void Level::drawBackground()
 
 void Level::checkCollisions()
 {
-	if (m_state->getCop() && hasCollidedWithPlayer(m_state->getCop()))
-		m_state->finishGame();
-}
+	if (m_state->getCop() && m_state->getPlayer()->hasCollidedWithCharacter(m_state->getCop()))
+		m_state->finishGame("Cop caught you");
 
-bool Level::hasCollidedWithPlayer(Character* character)
-{
-	return std::abs(m_state->getPlayer()->m_pos_x - character->m_pos_x) <=
-		(m_state->getPlayer()->m_width / 2.0f + character->m_width / 2.0f) &&
-		(m_state->getPlayer()->m_pos_y + m_state->getPlayer()->m_height / 2.0f >=
-			character->m_pos_y - character->m_height / 2.0f);
+	for (Character* character : m_characters)
+	{
+		if (m_state->getPlayer()->hasCollidedWithCharacter(character))
+			m_state->getPlayer()->pushPlayer(character->getCharacterMass());
+	}
 }
 
 void Level::drawTicket()
@@ -158,9 +210,22 @@ void Level::checkTicketRetrieval()
 	Player* player = m_state->getPlayer();
 	if (std::abs(player->m_pos_x - m_ticket->m_pos_x + m_state->getCanvasWidth() / 2.0f) <= player->m_width / 2.0f + m_ticket->m_width / 2.0f &&
 		player->m_pos_y - m_ticket->m_pos_y <= player->m_height / 2.0f + m_ticket->m_height / 2.0f)
-		player->retrievedTicket();
+		player->updateTicket(true);
 }
 
 Level::~Level()
 {
+	for (auto p_character : m_characters)
+		if (p_character)
+		{
+			delete p_character;
+			p_character = nullptr;
+		}
+
+	for (auto stairs : m_stairs)
+		if (stairs)
+		{
+			delete stairs;
+			stairs = nullptr;
+		}
 }

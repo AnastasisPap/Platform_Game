@@ -4,7 +4,10 @@
 #include "game_state.h"
 #include "player.h"
 #include "first_level.h"
+#include "second_level.h"
+#include "third_level.h"
 #include "cop.h"
+#include "config.h"
 
 GameState::GameState() {}
 
@@ -27,7 +30,7 @@ void GameState::init()
     m_brush_text_important.fill_color[1] = 0.5f;
     m_brush_text_important.fill_color[2] = 0.5f;
 
-    m_current_level = new FirstLevel("first level", 60, 10.0f);
+    m_current_level = new FirstLevel("first level", 60, 8.0f);
     m_current_level->init();
 
     m_player = new Player("Player", 1.5f);
@@ -42,7 +45,17 @@ void GameState::draw()
         return;
 
     if (!m_has_game_started) drawStartText();
-    else if (m_has_game_finished) graphics::drawText(0.28f * m_canvas_width, 0.4f * m_canvas_height, 45.0f, "You Lost. Press ESC to exit.", m_brush_text_important);
+    else if (m_has_won) graphics::drawText(0.28f * m_canvas_width,
+        0.4f * m_canvas_height, 45.0f, "You Won!! Press ESC to exit.", m_brush_text_important);
+    else if (m_has_game_finished) 
+    {
+		graphics::drawText(0.45f * m_canvas_width, 0.4f * m_canvas_height, 45.0f, "You Lost.",
+            m_brush_text_important);
+		graphics::drawText(0.4f * m_canvas_width, 0.5f * m_canvas_height, 45.0f, m_lost_reason,
+            m_brush_text_important);
+		graphics::drawText(0.4f * m_canvas_width, 0.6f * m_canvas_height, 45.0f, "Press ESC to exit.",
+            m_brush_text_important);
+    }
     else if (!m_has_game_finished) m_current_level->draw();
 }
 
@@ -71,9 +84,37 @@ void GameState::update(float dt)
     float sleep_time = std::max(0.0f, 17.0f - dt);
     std::this_thread::sleep_for(std::chrono::duration<float, std::milli>(sleep_time));
 
-    if (m_player->m_pos_x >= m_current_level->getLevelFinishPosX())
+    if (m_player->m_pos_x >= m_current_level->getLevelFinishPosX() && !m_has_game_finished)
     {
-        std::cout << "Finished";
+        int curr_level_num = m_current_level->getCurrentLevel();
+        if (sample_uniform() <= m_validator_prob && !m_player->hasTicket())
+        {
+            m_has_game_finished = true;
+            m_lost_reason = "No ticket";
+            return;
+        }
+
+        m_player->updateTicket(false);
+        m_player->resetGun();
+
+        if (curr_level_num == 1)
+        {
+            delete m_current_level;
+            m_current_level = new SecondLevel("second level", 100, 8.0f);
+            m_current_level->init();
+        }
+        else if (curr_level_num == 2)
+        {
+            delete m_current_level;
+            m_current_level = new ThirdLevel("third level", 100, 8.0f);
+            m_current_level->init();
+        }
+        else if (curr_level_num == 3)
+        {
+            m_has_game_finished = true;
+            m_has_won = true;
+            return;
+        }
     }
 
     if (!m_current_level)
@@ -81,7 +122,12 @@ void GameState::update(float dt)
 
     if (!m_has_game_started)
     {
-        if (graphics::getKeyState(graphics::SCANCODE_SPACE)) m_has_game_started = true;
+        if (graphics::getKeyState(graphics::SCANCODE_SPACE))
+        {
+            m_has_game_started = true;
+            int time = graphics::getGlobalTime() / 1000;
+            m_current_level->startTimer(time);
+        }
         return;
     }
 
@@ -112,5 +158,14 @@ void GameState::spawnCop()
     {
         m_cop = new Cop("cop");
         m_cop->init();
+    }
+}
+
+void GameState::stopCop()
+{
+    if (m_cop)
+    {
+        delete m_cop;
+        m_cop = nullptr;
     }
 }

@@ -1,6 +1,4 @@
 #pragma once
-#include <vector>
-#include <sgg/graphics.h>
 #include "game_object.h"
 #include "character.h"
 #include "config.h"
@@ -34,5 +32,5 @@ public:
 	void init() override;
 	void update(float dt) override;
 	bool isAscending(Character* character);
-	int getMaxWidth() { return m_max_width; }
+	float getMaxWidth() const { return m_max_width; }
 };

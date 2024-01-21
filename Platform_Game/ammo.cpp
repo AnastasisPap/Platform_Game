@@ -1,13 +1,20 @@
 #include <iostream>
 #include "game_state.h"
 #include "ammo.h"
+#include "character.h"
 
 void Ammo::update(float dt)
 {
-	float delta_time = dt / 10.0f;
-	m_pos_x += delta_time * m_ammo_velocity;
+	float delta_time = dt / 5.0f;
+	m_pos_x += m_direction * delta_time * m_ammo_velocity;
 
 	GameObject::update(dt);
+}
+
+bool Ammo::checkShotCharacter(Character* p_character)
+{
+	return std::abs(m_pos_x - m_state->getCanvasWidth() / 2.0f - m_state->m_background_global_offset_x - p_character->m_pos_x) <= p_character->m_width / 2.0f &&
+		std::abs(m_pos_y - p_character->m_pos_y) <= p_character->m_height / 2.0f;
 }
 
 void Ammo::draw()

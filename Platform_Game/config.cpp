@@ -1,6 +1,5 @@
 #include <random>
 #include "config.h"
-#include <sgg/graphics.h>
 
 float sample_uniform(float lower_bound, float upper_bound)
 {
